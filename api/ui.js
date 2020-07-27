@@ -15,12 +15,9 @@ module.exports = withUiHook(async ({payload, vercelClient}) => {
 	}
 
 	const metadata = await vercelClient.getMetadata()
-	console.log("METADATA", metadata.attachedProjects)
-	console.log(projectId, configurationId, integrationId)
 	if (!metadata.attachedProjects) {
 		metadata.attachedProjects = []
 	} else if (metadata.attachedProjects.includes(projectId)) {
-		console.log("CoNNECTed early")
 		connected = true;
 	}
 
@@ -30,18 +27,15 @@ module.exports = withUiHook(async ({payload, vercelClient}) => {
 				await vercelClient.addConfigurationToProject(projectId)
 				metadata.attachedProjects.push(projectId)
 				await vercelClient.setMetadata(metadata)
-				console.log("CONNECTED")
 				connected = true;
 				notice = htm`<Notice>Successfully connected to project.</Notice>`
 			} else {
 				notice = htm`<Notice error>Already connected to project.</Notice>`
-				console.log("else1: set connected true")
 
 				connected = true;
 			}
 		} catch(err) {
 			notice = htm`<Notice error>Error: ${err.message}</Notice>`
-			console.log("Error1: set connected false")
 			connected = false;
 		}
 	} else if (action === 'disconnect') {
@@ -51,24 +45,19 @@ module.exports = withUiHook(async ({payload, vercelClient}) => {
 				metadata.attachedProjects = (metadata.attachedProjects || []).filter(projId => projId !== projectId)
 				await vercelClient.setMetadata(metadata)
 				connected = false;
-				console.log("DISCONNECTED")
 				notice = htm`<Notice>Successfully disconnected to project.</Notice>`
 			} else {
-				console.log("else2: set connected false")
 				connected = false;
 				notice = htm`<Notice error>Not connected to project. Could not disconnect.</Notice>`
 			}
 		} catch(err) {
 			notice = htm`<Notice error>Error: ${err.message}</Notice>`
-			console.log("Error2: set connected true")
 			connected = true;
 		}
 	}
 
 	let content = ''
 	if (!connected) {
-		console.log("rendering connected content, connected is ", connected)
-
 		content = htm`
 		<Page>
       <Box display="flex" justifyContent="center" margin-bottom="2rem">
@@ -82,8 +71,6 @@ module.exports = withUiHook(async ({payload, vercelClient}) => {
 		</Page>
 	`
 	} else {
-		console.log("rendering ELSE connected content, connected is ", connected)
-
 		content = htm`
 		<Page>
       <Box display="flex" justifyContent="center" margin-bottom="2rem">
