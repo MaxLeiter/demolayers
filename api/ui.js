@@ -15,6 +15,9 @@ module.exports = withUiHook(async ({payload, vercelClient}) => {
 	}
 
 	const metadata = await vercelClient.getMetadata()
+	// we use the attachedProjects metadata for loading the initial state 
+	// if the projectId has already been connected. 
+	// Alternatively, you could manually check using the `configurations` array of configuration IDs in the `Project` documents from the Vercel API
 	if (!metadata.attachedProjects) {
 		metadata.attachedProjects = []
 	} else if (metadata.attachedProjects.includes(projectId)) {
