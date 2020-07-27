@@ -1,0 +1,9 @@
+{
+  "name": "my-ui-hook",
+  "dependencies": {
+    "@vercel/integration-utils": "https://files-962vaq5bb.vercel.app"
+  },
+  "scripts": {
+    "build": "yarn && mkdir -p public && touch public/index.html"
+  }
+}
